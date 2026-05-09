@@ -239,7 +239,7 @@ button.disabled {
   <div id="start-content">
     <img src="./portada.png" alt="Portada del cuento" id="cover-image">
     <h1>🌙 Mauro y la Luna</h1>
-    <p>Un cuento con Realidad Aumentada</p>
+    <p>Un cuento interactivo con Realidad Aumentada</p>
     <button id="btnStartStory">Iniciar cuento</button>
     <button id="btnCredits">Créditos</button>
   </div>
@@ -468,38 +468,115 @@ const btnPrev = document.querySelector("#btnPrev");
 
 const storyPages = {
   0: [
-    "Había una vez un ratoncito llamado Mauro,",
-    "que vivía en una madriguera cálida bajo un roble viejo.",
-    "Le encantaba salir por las noches a buscar semillas…",
-    "pero había algo que lo asustaba: ¡La Luna!"
+    "En una tierra muy lejana, más allá de todo lo que conocemos,",
+    " vivía un diminuto ratón de nombre Milo.",
+    "Vivía en una madriguera cálida debajo de un gran y viejo roble.",
+    "Como todas las noches, salió en busca de semillas para saciar su gran apetito.",
+    "in embargo, más allá de las copas de los árboles,",
+    "había algo que lo asustaba en cada una de sus exploraciones nocturnas: la luna."
   ],
   1: [
-    "Grande, blanca y redonda,",
-    "lo miraba desde lo alto con un brillo tan intenso que Mauro sentía que lo estaba juzgando.",
-    "—Seguro se ríe de mí porque soy pequeño… —",
-    "pensaba mientras corría a esconderse entre las hojas."
+    "Grande, tan blanca como la nieve y redonda igual que el sol,",
+    "ella lo miraba desde las alturas. ",
+    " Por su brillo tan intenso, deslumbrante, Milo la sentía amenazante,",
+    "juzgona e inquietante.",
+    "— Seguro se ríe de mí porque soy pequeño… —",
+    "pensaba mientras corría a esconderse bajo unos frondosos arbustos, temeroso."
   ],
+  
   2: [
-    "Una noche, mientras huía apresurado, tropezó con una luciérnaga que brillaba tranquilamente sobre una piedra.",
-    "—¿Por qué corres así? —preguntó la luciérnaga.",
-    "—La Luna me mira —susurró Mauro temblando.",
-    "La luciérnaga soltó una risita luminosa.",
-    "—¿Y qué tiene de malo que alguien te mire?",
-    "Tal vez no te está mirando para juzgarte… sino para acompañarte."
-  ],
-  3: [
-    "Mauro se quedó pensando. Esa noche decidió no esconderse.",
-    "Se sentó en el pasto y miró hacia el cielo.",
-    "La Luna, muy despacio, brilló aún más fuerte… como si le sonriera.",
-    "Y Mauro, por primera vez, le sonrió también.",
-    "Desde entonces, el pequeño ratón siguió sintiendo miedo a veces, pero había aprendido algo importante:",
-    "La valentía no es no tener miedo… es atreverse a mirar al miedo a los ojos y sonreírle de vuelta."
+    "(A) Entrar a una madriguera para resguardarse",
+    "(B) Ir al bosque de las luciérnagas",
+    "(C)  Seguir corriendo"
   ],
 
-   4: [
-    "Mauro y la Luna",
-     "cuento con AR"
-    ]
+   3: [
+    "Una noche de luna llena, tan fría y silenciosa,",
+     "Milo corría despavorido nuevamente.",
+     "Distraído y ansioso por esconderse, entró al primer lugar que consideró como seguro. ",
+     "Algo que sellaría su destino.",
+     "El lugar era nada más y nada menos que la madriguera de una serpiente.",
+     " Pero eso era algo que Milo desconocía, al menos hasta que, ",
+     " explorando su nuevo escondite chocó de frente con ella. ",
+     "La serpiente extasiada por el nuevo inquilino, se adelantó a cubrir la entrada con su largo cuerpo.",
+     "¿Qué trae a esssssste pequeño ratón a mi casa? - ",
+     "preguntó con una malévola sonrisa ",
+     " - Bienvenido, ponte cómodo. Ssse ve que estás muy cansssssado. ",
+     "La Luna me observa, me sigue a dónde quiera que voy y me siento juzgado —",
+     "susurró Milo temblando. ",
+     "No me digassss. Pobrecito chiquitín. ",
+     "No te preocupessss por ella, aquí no puede hacerte daño, no mientras yo esté contigo. "
+    ],
+
+  4: [
+     "La serpiente se enroscó alrededor del ratón en lo que parecía ser una especie de abrazo",
+     "Milo, al notar los colmillos de la serpiente asomarse, intentó soltarse del agarre, ",
+     "argumentando que tenía que seguir buscando su comida… pero era demasiado tarde.",
+     "Aquí, la luna nunca más te va a juzgar, pequeño. ",
+     "Y en un instante, la serpiente enguyó al ratón. ",
+     "Dejando sólo mechones de pelo volando por el lugar. ",
+     " Y tal como lo dijo, la luna no lo volvería a juzgar porque ahora Milo estaba con ella. "
+  ],
+
+  5: [
+    "Una noche de luna llena, tan fría y silenciosa, ",
+    " Milo corría despavorido nuevamente. Distraído y ansioso por esconderse,",
+    "tropezó con una luciérnaga que descansaba tranquilamente sobre una piedra, brillando.",
+    "—¿Por qué corres así, ratoncito? —preguntó la luciérnaga.",
+    "—La Luna, me observa, me sigue a dónde quiera que voy y me siento juzgado —susurró Milo temblando.",
+    "La luciérnaga soltó una risita tintineante.",
+    "—¿Y qué tiene de malo que alguien te observe? ",
+    "Tal vez no te está mirando para juzgarte… sino para darte compañía",
+    "¿No lo habías pensado, chiquitín? "
+  ],
+
+  6: [
+    "Milo se quedó pensando por un momento, dudoso. ",
+    "Se permitió mirar al cielo y logró admirarla en su vasto esplendor.",
+    "Un pensamiento en él cambió,  el miedo que sentía se transformó en admiración.",
+    "Por esa noche y todas las siguientes decidió no volver a esconderse.",
+    "Se sentó en el pasto y al voltear al cielo se encontró acompañado.",
+    "La Luna, muy despacio, se iluminó aún más fuerte… ",
+    "como si le devolviera la atención y con ella una sonrisa.",
+    "Desde entonces, el pequeño Milo aprendió algo importante a pesar de sentir miedo algunas veces: ",
+    "La valentía no es no tener miedo…",
+    "es atreverse a mirar al miedo a los ojos y sonreírle de vuelta."
+    
+  ],
+
+  7: [
+    "Una noche de luna llena, tan fría y silenciosa,",
+    "Milo corría despavorido nuevamente. Distraído y ansioso por esconderse,",
+    "no reparó en notar el enorme agujero que había delante suyo. ",
+    "El pequeño ratón cayó por una de las paredes hasta tocar el suelo.",
+    "Aturdido por el impacto, con el corazón al mil por hora, intentó escalar para salir sin éxito alguno.",
+    "Lo aterrador para él no era el agujero, ni el hecho de estar atrapado,",
+    " era que al mirar hacia arriba, la luna abarcaba la única salida. ",
+    "Lo único que los separaba era un pedazo de cielo y para Milo eso era lo peor. ",
+    "En ese momento, el tiempo para Milo pareció detenerse.",
+    "Los minutos se sentían como horas, había gastado sus pocas fuerzas en intentar escapar del agujero.",
+    "Resignado, se aferró a la poca luz que aún tenía, aunque fuera de ella.",
+    " A pesar de ser incómoda y juzgona, empezaba a sentir algo diferente, algo parecido a la compañía. ",
+    "Al pasar de una hora, la luna había avanzado lo suficiente para ya no cubrir el agujero.",
+    "Con el pasar de los minutos dejó de avistarse, dejándolo completamente a oscuras.",
+    "Si había algo que nuestro ratón odiaba más que sentirse observado, era la oscuridad.",
+    "Quizá empezó a extrañarla, la luz que lo cubría y la compañía que le brindaba.",
+    "Los pensamientos negativos que por mucho tiempo sostuvo, se disiparon con el pasar de las horas. "
+    
+  ],
+
+  8: [
+    "La luz del amanecer fue lo que despertó a Milo.",
+    "No recordaba haberse dormido, pero  realmente se encontraba feliz de no estar a mitad de la noche con el sonido de su respiración cómo su único amigo. ",
+    "Ahora poseía energía suficiente para intentar subir a la superficie. ",
+    " Con el sol saludando en el éste, y después de un par de intentos más por fin lo logró. ",
+    "El aire se sentía diferente. Milo recordó entonces a la luna tan grande, blanca y redonda… ",
+    "Ahora, en vez de que su corazón sintiera miedo, sintió una especie de paz y de añoranza.",
+    "No lo había experimentado antes, era raro,",
+    " pero no tan raro cómo las ansias que tenía de que oscureciera sólo para verla brillar una vez más."
+  ]
+
+  
 };
 
 const storyTimings = {
