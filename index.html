@@ -1,1063 +1,631 @@
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-gesture-detector@1.0.0/dist/aframe-gesture-detector.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
+```html
+<!DOCTYPE html>
+<html>
 
-    <style>
-      body { margin: 0; overflow: hidden; }
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-      /* 📘 Cuadro del cuento */
-      #menu {
-        position: fixed;
-        bottom: 5px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.7);
-        padding: 15px 20px;
-        border-radius: 15px;
-        color: white;
-        font-family: sans-serif;
-        z-index: 999;
-        text-align: center;
-        width: 85%;
-        max-width: 420px;
-        display: none;
-      }
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-      #menu button {
-        margin: 5px;
-        padding: 8px 15px;
-        border: none;
-        border-radius: 10px;
-        background: #1e90ff;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-      }
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
 
-      #menu button:hover { background: #4682b4; }
-      #story-box { margin-top: 10px; font-size: 19px; line-height: 1.5; }
+    /* 📘 Cuadro del cuento */
+    #menu {
+      position: fixed;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px 20px;
+      border-radius: 15px;
+      color: white;
+      font-family: sans-serif;
+      z-index: 999;
+      text-align: center;
+      width: 85%;
+      max-width: 420px;
+      display: none;
+    }
 
-      /* 🧭 Mensaje de escaneo */
-      #scan-message {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.75);
-        padding: 12px 18px;
-        border-radius: 12px;
-        color: white;
-        font-family: sans-serif;
-        z-index: 1000;
-        text-align: center;
-      }
+    #menu button {
+      margin: 5px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 10px;
+      background: #1e90ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-      #scan-message img {
-        display: block;
-        margin: 10px auto 0 auto;
-        max-width: 150px;
-        border-radius: 8px;
-      }
+    #menu button:hover {
+      background: #4682b4;
+    }
 
-      /* 🎮 Controles del sistema AR */
-      #controls {
-        position: fixed;
-        bottom: 120px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1000;
-        display: flex;
-        gap: 10px;
-      }
+    #story-box {
+      margin-top: 10px;
+      font-size: 19px;
+      line-height: 1.5;
+    }
 
-      #controls button {
-        padding: 6px 12px;
-        border: none;
-        border-radius: 8px;
-        background: #444;
-        color: white;
-        cursor: pointer;
-      }
-      #controls button:hover { background: #666; }
+    /* 🧭 Mensaje escaneo */
+    #scan-message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.75);
+      padding: 12px 18px;
+      border-radius: 12px;
+      color: white;
+      font-family: sans-serif;
+      z-index: 1000;
+      text-align: center;
+    }
 
-      /* ✨ Botones de cambio de modo (3D / AR) */
-#mode-switch {
-  position: fixed;
-  top: 20px;                   /* ⬅️ AHORA VA ARRIBA CERCA DEL SCAN MESSAGE */
-  right: 20px;
-  z-index: 1500;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+    #scan-message img {
+      display: block;
+      margin: 10px auto 0 auto;
+      max-width: 150px;
+      border-radius: 8px;
+    }
 
-#mode-switch button {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #6dd5fa, #2980b9);
-  color: white;
-  font-weight: bold;
-  font-family: "Poppins", sans-serif;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-}
+    /* 🌙 Pantalla inicio */
+    #start-screen {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #000428, #004e92);
+      color: white;
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 2000;
+      text-align: center;
+    }
 
-#mode-switch button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-}
+    #start-content img#cover-image {
+      width: 200px;
+      max-width: 70%;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.4);
+    }
 
-#mode-switch button:active {
-  transform: scale(0.95);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
+    #start-content h1 {
+      font-size: 2em;
+      margin: 10px 0 5px 0;
+    }
 
+    #start-content p {
+      margin-bottom: 15px;
+      color: #cce7ff;
+    }
 
+    #start-content button {
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      background: #1e90ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-          /* 🌙 Pantalla de inicio */
-#start-screen {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, #000428, #004e92);
-  color: white;
-  font-family: "Poppins", sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 2000;
-  text-align: center;
-}
+    #start-content button:hover {
+      background: #4682b4;
+    }
 
-#start-content img#cover-image {
-  width: 200px;
-  max-width: 70%;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(255,255,255,0.4);
-}
+    /* 🌟 Créditos */
+    #credits-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2100;
+      justify-content: center;
+      align-items: center;
+    }
 
-#start-content h1 {
-  font-size: 2em;
-  margin: 10px 0 5px 0;
-}
+    #credits-box {
+      background: white;
+      color: black;
+      padding: 20px 30px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 300px;
+    }
 
-#start-content p { margin-bottom: 15px; color: #cce7ff; }
-#start-content button {
-  margin: 5px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 12px;
-  background: #1e90ff;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
+    #credits-box h2 {
+      margin-top: 0;
+      color: #1e90ff;
+    }
 
-#start-content button:hover { background: #4682b4; }
+    #credits-box button {
+      margin-top: 10px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      background: #1e90ff;
+      color: white;
+      cursor: pointer;
+    }
 
-/* 🌟 Créditos (modal) */
-#credits-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 2100;
-  justify-content: center;
-  align-items: center;
-}
+    #credits-box button:hover {
+      background: #4682b4;
+    }
+  </style>
+</head>
 
-#credits-box {
-  background: #fff;
-  color: #000;
-  padding: 20px 30px;
-  border-radius: 12px;
-  text-align: center;
-  max-width: 300px;
-}
+<body>
 
-#credits-box h2 {
-  margin-top: 0;
-  color: #1e90ff;
-}
+  <!-- 🌙 Pantalla inicio -->
+  <div id="start-screen">
+    <div id="start-content">
 
-#credits-box button {
-  margin-top: 10px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 8px;
-  background: #1e90ff;
-  color: white;
-  cursor: pointer;
-}
+      <img src="./Portada.png" alt="Portada" id="cover-image">
 
-#credits-box button:hover { background: #4682b4; }
+      <h1>🌙 Mauro y la Luna</h1>
 
+      <p>Un cuento interactivo con Realidad Aumentada</p>
 
-  /* 🔊 Botón de audio */
-#btnAudio {
-  position: fixed;
-  top: -90px;
-  right: -100px;
-  z-index: 1500;
-  background: rgba(30, 144, 255, 0.9);
-  color: white;
-  font-size: 22px;
-  border: none;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  display: none; /* Se muestra solo cuando hay una página activa */
-}
+      <button id="btnStartStory">Iniciar cuento</button>
 
-#btnAudio:hover {
-  background: #4682b4;
-}
-      
-button.disabled {
-  opacity: 0.4;
-  pointer-events: none;
-}
+      <button id="btnCredits">Créditos</button>
 
-
-    </style>
-  </head>
-  <body>
-
-    <!-- 🌟 Pantalla de inicio -->
-<div id="start-screen">
-  <div id="start-content">
-    <img src="./Portada(N_M).png" alt="Portada del cuento" id="cover-image">
-    <h1>🌙 Mauro y la Luna</h1>
-    <p>Un cuento interactivo con Realidad Aumentada</p>
-    <button id="btnStartStory">Iniciar cuento</button>
-    <button id="btnCredits">Créditos</button>
+    </div>
   </div>
-</div>
 
-<!-- 🌟 Modal de créditos -->
+  <!-- 🌟 Créditos -->
+  <div id="credits-modal">
 
-<div id="credits-modal">
-  <div id="credits-box">
-    <h2>Créditos</h2>
-    <p><strong>Autor:</strong> Equipo dinamita</p>
-    <p><strong>Modelado 3D:</strong> Sofi y Miguel</p>
-    <p><strong>Historia:</strong>Ingrid</p>
-    <p><strong>Arte:</strong>Lucy y Chucho</p>
-    <p><strong>Desarrollo:</strong> Raquel</p>
-    <button id="btnCloseCredits">Cerrar</button>
+    <div id="credits-box">
+
+      <h2>Créditos</h2>
+
+      <p><strong>Autor:</strong> Equipo dinamita</p>
+      <p><strong>Modelado 3D:</strong> Sofi y Miguel</p>
+      <p><strong>Historia:</strong> Ingrid</p>
+      <p><strong>Arte:</strong> Lucy y Chucho</p>
+      <p><strong>Desarrollo:</strong> Raquel</p>
+
+      <button id="btnCloseCredits">Cerrar</button>
+
+    </div>
+
   </div>
-</div>
 
-    <!-- 📷 Mensaje inicial -->
+  <!-- 🧭 Escaneo -->
+  <div id="scan-message">
 
-    <div id="scan-message">
-      Escanea una de las páginas del cuento para comenzar 📖
-      <img id="scan-image" src="./Introducción 1.png" alt="Página del cuento">
+    Escanea una página del cuento 📖
+
+    <img id="scan-image" src="./Introduccion1.png">
+
+  </div>
+
+  <!-- 📘 Texto -->
+  <div id="menu">
+
+    <div id="story-box"></div>
+
+    <div>
+
+      <button id="btnPrev">⟵ Anterior</button>
+
+      <button id="btnNext">Siguiente ⟶</button>
 
     </div>
-    <!-- 📘 Cuadro del cuento -->
 
-    <div id="menu">
-      <div id="story-box"></div>
-      <div>
-        <button id="btnPrev">⟵ Anterior</button>
-        <button id="btnNext">Siguiente ⟶</button>
-      </div>
-    </div>
+  </div>
 
-    <!-- 🎮 Controles del sistema AR -->
+  <!-- 🧱 ESCENA -->
+  <a-scene
+    mindar-image="imageTargetSrc: ./cuento.mind; maxTrack: 1"
+    color-space="sRGB"
+    renderer="colorManagement: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
 
-    <div id="controls">
-      <button id="btnAudio" title="Reproducir narración">🔊</button>
-    </div>
-    
+    <!-- Assets -->
+    <a-assets>
 
-    <div id="mode-switch">
-  <button id="enter3d">Modo 3D</button>
-  <button id="enterAR" style="display:none;">Regresar a AR</button>
-</div>
+      <a-asset-item id="PageModel1" src="./Introduccion1.glb"></a-asset-item>
+      <a-asset-item id="PageModel2" src="./Introduccion2.glb"></a-asset-item>
 
+      <a-asset-item id="PageModel4" src="./FinalA1.glb"></a-asset-item>
+      <a-asset-item id="PageModel5" src="./FinalA2.glb"></a-asset-item>
 
+      <a-asset-item id="PageModel6" src="./FinalB1.glb"></a-asset-item>
+      <a-asset-item id="PageModel7" src="./FinalB2.glb"></a-asset-item>
 
-    <!-- 🧱 Escena A-Frame + MindAR -->
+      <a-asset-item id="PageModel8" src="./FinalC1.glb"></a-asset-item>
+      <a-asset-item id="PageModel9" src="./FinalC2.glb"></a-asset-item>
 
-    <a-scene
-      gesture-detector
-      mindar-image="imageTargetSrc: ./cuento2.mind; maxTrack: 1"
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
-    >
+    </a-assets>
 
-      <a-assets>
-        <!-- Modelos 3D (uno por página del cuento) -->
-        <a-asset-item id="PageModel1" src="./Final_A_2.glb"></a-asset-item>
-        <a-asset-item id="PageModel2" src="./escena2.glb"></a-asset-item>
-        <a-asset-item id="PageModel3" src="./escena3_4.glb"></a-asset-item>
-        <a-asset-item id="PageModel4" src="./escena4.glb"></a-asset-item>
-        <a-asset-item id="PageModel5" src="./portada_cuento.glb"></a-asset-item>
+    <!-- 💡 Luz -->
+    <a-light type="ambient" intensity="1"></a-light>
 
-              <!-- 🎧 Audios de narración -->
-        <audio id="audio1" src="./audio1.mp3"></audio>
-        <audio id="audio2" src="./audio2.mp3"></audio>
-        <audio id="audio3" src="./audio3.mp3"></audio>
-        <audio id="audio4" src="./audio4.mp3"></audio>
-        <audio id="audio5" src="./audio5.mp3"></audio>
-      </a-assets>
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
+    <!-- INTRODUCCION 1 -->
+    <a-entity id="target-page1" mindar-image-target="targetIndex: 0">
 
-  <!-- 🌤 Luz general más neutra -->
-<a-entity light="type: ambient; color: #ffffff; intensity: 0.25"></a-entity>
+      <a-gltf-model
+        src="#PageModel1"
+        position="0 0 0"
+        scale="0.3 0.3 0.3">
+      </a-gltf-model>
 
-<!-- 🌙 Luz de luna (ligeramente azul pero natural) -->
-<a-entity light="type: directional;
-                 color: #cfd9ff;
-                 intensity: 0.55;
-                 position="-2 4 3"
-                 cast-shadow="true"></a-entity>
+    </a-entity>
 
-<!-- ✨ Luz mágica tenue, MUY suave -->
-<a-entity light="type: point;
-                 color: #aac6ff;
-                 intensity: 0.15;
-                 position="0 1.5 1.2"></a-entity>
+    <!-- INTRODUCCION 2 -->
+    <a-entity id="target-page2" mindar-image-target="targetIndex: 1">
 
+      <a-gltf-model
+        src="#PageModel2"
+        position="0 0 0"
+        scale="0.3 0.3 0.3">
+      </a-gltf-model>
 
-      <!-- Modelo libre para modo 3D (inicia oculto) -->
-<a-entity id="freeModel" visible="false"
-          position="0 0 0"
-          scale="0.3 0.3 0.3"
-          gesture-handler="minScale: 0.2; maxScale: 5"
-          animation__spin="property: rotation; to: 0 360 0; dur:8500; loop:true; easing:linear"
-          nightify
-          attach-moon-light="moonName: Luna">
-</a-entity>
+    </a-entity>
 
+    <!-- INTERMEDIO -->
+    <a-entity id="target-page3" mindar-image-target="targetIndex: 2">
+    </a-entity>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <!-- FINALA1 -->
+    <a-entity id="target-page4" mindar-image-target="targetIndex: 3">
 
-      <!-- Página 1 -->
+      <a-gltf-model
+        src="#PageModel4"
+        position="0 0 0"
+        scale="0.3 0.3 0.3">
+      </a-gltf-model>
 
-      <a-entity id="target-page1" mindar-image-target="targetIndex: 0" smooth-follow="factor: 12">
+    </a-entity>
 
-    <!-- CONTENEDOR QUE YA NO TIENE smooth-follow -->
-    <a-entity id="wrapper1">
-        <a-entity 
-          gesture-handler="minScale: 0.2; maxScale: 5"
-          pause-animations-on-gesture
-          gltf-model="#PageModel1"
-          nightify
-          attach-moon-light="moonName: Luna"
-          position="0 0 0"
-          scale="0.3 0.3 0.3"
-          animation__spin="property: rotation; to: 0 360 0; dur:8500; loop:true; easing:linear">
-        </a-entity>
-        </a-entity>
-      </a-entity>
-      <!-- Página 2 -->
+    <!-- FINALA2 -->
+    <a-entity id="target-page5" mindar-image-target="targetIndex: 4">
 
-      <a-entity id="target-page2" mindar-image-target="targetIndex: 1" smooth-follow="factor: 12">
-  <a-entity id="wrapper2">
-        <a-entity 
-           gesture-handler="minScale: 0.2; maxScale: 5"
-          pause-animations-on-gesture
-          gltf-model="#PageModel2"
-          nightify
-          attach-moon-light="moonName: Luna"
-          position="0 0 0"
-          scale="0.3 0.3 0.3"
-          animation__spin="property: rotation; to: 0 360 0; dur:8500; loop:true; easing:linear">
-         </a-entity>
-        </a-entity>
+      <a-gltf-model
+        src="#PageModel5"
+        position="0 0 0"
+        scale="0.3 0.3 0.3">
+      </a-gltf-model>
 
-      </a-entity>
+    </a-entity>
 
-      <!-- Página 3 -->
-<a-entity id="target-page3" mindar-image-target="targetIndex: 2" smooth-follow="factor: 12">
-  <a-entity id="wrapper3">
-        <a-entity 
-          gesture-handler="minScale: 0.2; maxScale: 5"
-          pause-animations-on-gesture
-          gltf-model="#PageModel3"
-          nightify
-          attach-moon-light="moonName: Luna"
-          position="0 0 0"
-          scale="0.15 0.15 0.15"
-          animation__spin="property: rotation; to: 0 360 0; dur:8500; loop:true; easing:linear">
-        </a-entity>
-        </a-entity>
-      </a-entity>
+    <!-- FINALB1 -->
+    <a-entity id="target-page6" mindar-image-target="targetIndex: 5">
 
-      <!-- Página 4 -->
-      <a-entity id="target-page4" mindar-image-target="targetIndex: 3" smooth-follow="factor: 12">
-  <a-entity id="wrapper4">
-        <a-entity
-          gesture-handler="minScale: 0.2; maxScale: 5"
-          pause-animations-on-gesture
-          gltf-model="#PageModel4"
-          nightify
-          attach-moon-light="moonName: Luna"
-          position="0 0 0"
-          scale="0.15 0.15 0.15"
-          animation__spin="property: rotation; to: 0 360 0; dur:8500; loop:true; easing:linear">
-        </a-entity>
-        </a-entity>
-      </a-entity>
+      <a-gltf-model
+        src="#PageModel6"
+        position="0 0 0"
+        scale="0.3 0.3 0.3">
+      </a-gltf-model>
 
+    </a-entity>
 
-        <!-- Página 5-->
-<a-entity id="target-page5" mindar-image-target="targetIndex: 4" smooth-follow="factor: 12">
-  <a-entity id="wrapper5">
-        <a-entity 
-          gesture-handler="minScale: 0.2; maxScale: 5"
-          pause-animations-on-gesture
-          gltf-model="#PageModel5"
-          nightify
-          attach-moon-light="moonName: Luna"
-          position="0 0 -2"
-          scale="0.3 0.3 0.3"
-          animation__spin="property: rotation; to: 0 360 0; dur:8500; loop:true; easing:linear">
-        </a-entity>
-        </a-entity>
-      </a-entity>
-    </a-scene>
+    <!-- FINALB2 -->
+    <a-entity id="target-page7" mindar-image-target="targetIndex: 6">
 
-    <script>
-AFRAME.registerComponent("smooth-follow", {
-  schema: { factor: { default: 18 } }, // entre 8 y 20 funciona muy bien
+      <a-gltf-model
+        src="#PageModel7"
+        position="0 0 0"
+        scale="0.3 0.3 0.3">
+      </a-gltf-model>
 
-  init() {
-    this.targetPos = new THREE.Vector3();
-    this.currentPos = new THREE.Vector3();
-  },
+    </a-entity>
 
-  tick() {
-    const world = new THREE.Vector3();
-    this.el.object3D.getWorldPosition(world);
+    <!-- FINALC1 -->
+    <a-entity id="target-page8" mindar-image-target="targetIndex: 7">
 
-    this.targetPos.copy(world);
-    this.currentPos.lerp(this.targetPos, 1 / this.data.factor);
+      <a-gltf-model
+        src="#PageModel8"
+        position="0 0 0"
+        scale="0.3 0.3 0.3">
+      </a-gltf-model>
 
-    this.el.object3D.position.copy(this.currentPos);
-  }
-});
-</script>
+    </a-entity>
 
+    <!-- FINALC2 -->
+    <a-entity id="target-page9" mindar-image-target="targetIndex: 8">
 
-    
+      <a-gltf-model
+        src="#PageModel9"
+        position="0 0 0"
+        scale="0.3 0.3 0.3">
+      </a-gltf-model>
+
+    </a-entity>
+
+  </a-scene>
+
   <script>
-const storyBox = document.querySelector("#story-box");
-const menu = document.querySelector("#menu");
-const scanMessage = document.querySelector("#scan-message");
-const btnNext = document.querySelector("#btnNext");
-const btnPrev = document.querySelector("#btnPrev");
 
-// 📖 Cuento dividido por páginas
+    // 📖 Texto del cuento
 
-const storyPages = {
-  0: [
-    "En una tierra muy lejana, más allá de todo lo que conocemos,",
-    " vivía un diminuto ratón de nombre Milo.",
-    "Vivía en una madriguera cálida debajo de un gran y viejo roble.",
-    "Como todas las noches, salió en busca de semillas para saciar su gran apetito.",
-    "in embargo, más allá de las copas de los árboles,",
-    "había algo que lo asustaba en cada una de sus exploraciones nocturnas: la luna."
-  ],
-  1: [
-    "Grande, tan blanca como la nieve y redonda igual que el sol,",
-    "ella lo miraba desde las alturas. ",
-    " Por su brillo tan intenso, deslumbrante, Milo la sentía amenazante,",
-    "juzgona e inquietante.",
-    "— Seguro se ríe de mí porque soy pequeño… —",
-    "pensaba mientras corría a esconderse bajo unos frondosos arbustos, temeroso."
-  ],
-  
-  2: [
-    "(A) Entrar a una madriguera para resguardarse",
-    "(B) Ir al bosque de las luciérnagas",
-    "(C)  Seguir corriendo"
-  ],
+    const storyPages = {
+      0: [ 
+        "En una tierra muy lejana, más allá de todo lo que conocemos,", 
+          " vivía un diminuto ratón de nombre Milo.", 
+          "Vivía en una madriguera cálida debajo de un gran y viejo roble.", 
+          "Como todas las noches, salió en busca de semillas para saciar su gran apetito.",
+          "in embargo, más allá de las copas de los árboles,", 
+          "había algo que lo asustaba en cada una de sus exploraciones nocturnas: la luna." 
+         ], 
+      1: [ 
+        "Grande, tan blanca como la nieve y redonda igual que el sol,", 
+          "ella lo miraba desde las alturas. ", 
+          " Por su brillo tan intenso, deslumbrante, Milo la sentía amenazante,", 
+          "juzgona e inquietante.", "— Seguro se ríe de mí porque soy pequeño… —", 
+          "pensaba mientras corría a esconderse bajo unos frondosos arbustos, temeroso."
+         ], 
+      2: 
+        [ 
+          "(A) Entrar a una madriguera para resguardarse", 
+          "(B) Ir al bosque de las luciérnagas", 
+          "(C) Seguir corriendo" 
+        ], 
+      3: [ 
+        "Una noche de luna llena, tan fría y silenciosa,", 
+        "Milo corría despavorido nuevamente.", 
+        "Distraído y ansioso por esconderse, entró al primer lugar que consideró como seguro. ", 
+        "Algo que sellaría su destino.", 
+        "El lugar era nada más y nada menos que la madriguera de una serpiente.", 
+        " Pero eso era algo que Milo desconocía, al menos hasta que, ", 
+        " explorando su nuevo escondite chocó de frente con ella. ", 
+        "La serpiente extasiada por el nuevo inquilino, se adelantó a cubrir la entrada con su largo cuerpo.", 
+        "¿Qué trae a esssssste pequeño ratón a mi casa? - ", 
+        "preguntó con una malévola sonrisa ", 
+        " - Bienvenido, ponte cómodo. Ssse ve que estás muy cansssssado. ", 
+        "La Luna me observa, me sigue a dónde quiera que voy y me siento juzgado —", 
+        "susurró Milo temblando. ", "No me digassss. Pobrecito chiquitín. ", 
+        "No te preocupessss por ella, aquí no puede hacerte daño, no mientras yo esté contigo. " 
+      ], 
+      4: [ 
+        "La serpiente se enroscó alrededor del ratón en lo que parecía ser una especie de abrazo", 
+        "Milo, al notar los colmillos de la serpiente asomarse, intentó soltarse del agarre, ", 
+        "argumentando que tenía que seguir buscando su comida… pero era demasiado tarde.", 
+        "Aquí, la luna nunca más te va a juzgar, pequeño. ", 
+        "Y en un instante, la serpiente enguyó al ratón. ",
+        "Dejando sólo mechones de pelo volando por el lugar. ", 
+        " Y tal como lo dijo, la luna no lo volvería a juzgar porque ahora Milo estaba con ella. " 
+      ], 
+      5: [
+        "Una noche de luna llena, tan fría y silenciosa, ", 
+        " Milo corría despavorido nuevamente. Distraído y ansioso por esconderse,",
+        "tropezó con una luciérnaga que descansaba tranquilamente sobre una piedra, brillando.", 
+        "—¿Por qué corres así, ratoncito? —preguntó la luciérnaga.", 
+        "—La Luna, me observa, me sigue a dónde quiera que voy y me siento juzgado —susurró Milo temblando.", 
+        "La luciérnaga soltó una risita tintineante.", 
+        "—¿Y qué tiene de malo que alguien te observe? ", 
+        "Tal vez no te está mirando para juzgarte… sino para darte compañía", 
+        "¿No lo habías pensado, chiquitín? " ],
+      6: [ 
+        "Milo se quedó pensando por un momento, dudoso. ", 
+        "Se permitió mirar al cielo y logró admirarla en su vasto esplendor.", 
+        "Un pensamiento en él cambió, el miedo que sentía se transformó en admiración.", 
+        "Por esa noche y todas las siguientes decidió no volver a esconderse.", 
+        "Se sentó en el pasto y al voltear al cielo se encontró acompañado.", 
+        "La Luna, muy despacio, se iluminó aún más fuerte… ", 
+        "como si le devolviera la atención y con ella una sonrisa.", 
+        "Desde entonces, el pequeño Milo aprendió algo importante a pesar de sentir miedo algunas veces: ", 
+        "La valentía no es no tener miedo…", "es atreverse a mirar al miedo a los ojos y sonreírle de vuelta." 
+      ], 
+      7: [ "Una noche de luna llena, tan fría y silenciosa,", 
+          "Milo corría despavorido nuevamente. Distraído y ansioso por esconderse,", 
+          "no reparó en notar el enorme agujero que había delante suyo. ", 
+          "El pequeño ratón cayó por una de las paredes hasta tocar el suelo.", 
+          "Aturdido por el impacto, con el corazón al mil por hora, intentó escalar para salir sin éxito alguno.", 
+          "Lo aterrador para él no era el agujero, ni el hecho de estar atrapado,", 
+          " era que al mirar hacia arriba, la luna abarcaba la única salida. ", 
+          "Lo único que los separaba era un pedazo de cielo y para Milo eso era lo peor. ", 
+          "En ese momento, el tiempo para Milo pareció detenerse.", 
+          "Los minutos se sentían como horas, había gastado sus pocas fuerzas en intentar escapar del agujero.", 
+          "Resignado, se aferró a la poca luz que aún tenía, aunque fuera de ella.", 
+          " A pesar de ser incómoda y juzgona, empezaba a sentir algo diferente, algo parecido a la compañía. ", 
+          "Al pasar de una hora, la luna había avanzado lo suficiente para ya no cubrir el agujero.", 
+          "Con el pasar de los minutos dejó de avistarse, dejándolo completamente a oscuras.", 
+          "Si había algo que nuestro ratón odiaba más que sentirse observado, era la oscuridad.", 
+          "Quizá empezó a extrañarla, la luz que lo cubría y la compañía que le brindaba.", 
+          "Los pensamientos negativos que por mucho tiempo sostuvo, se disiparon con el pasar de las horas. "
+         ], 
+      
+      8: [ "La luz del amanecer fue lo que despertó a Milo.", 
+          "No recordaba haberse dormido, pero realmente se encontraba feliz de no estar a mitad de la noche con el sonido de su respiración cómo su único amigo. ", 
+          "Ahora poseía energía suficiente para intentar subir a la superficie. ", 
+          " Con el sol saludando en el éste, y después de un par de intentos más por fin lo logró. ", 
+          "El aire se sentía diferente. Milo recordó entonces a la luna tan grande, blanca y redonda… ", 
+          "Ahora, en vez de que su corazón sintiera miedo, sintió una especie de paz y de añoranza.", 
+          "No lo había experimentado antes, era raro,", 
+          " pero no tan raro cómo las ansias que tenía de que oscureciera sólo para verla brillar una vez más." ]
 
-   3: [
-    "Una noche de luna llena, tan fría y silenciosa,",
-     "Milo corría despavorido nuevamente.",
-     "Distraído y ansioso por esconderse, entró al primer lugar que consideró como seguro. ",
-     "Algo que sellaría su destino.",
-     "El lugar era nada más y nada menos que la madriguera de una serpiente.",
-     " Pero eso era algo que Milo desconocía, al menos hasta que, ",
-     " explorando su nuevo escondite chocó de frente con ella. ",
-     "La serpiente extasiada por el nuevo inquilino, se adelantó a cubrir la entrada con su largo cuerpo.",
-     "¿Qué trae a esssssste pequeño ratón a mi casa? - ",
-     "preguntó con una malévola sonrisa ",
-     " - Bienvenido, ponte cómodo. Ssse ve que estás muy cansssssado. ",
-     "La Luna me observa, me sigue a dónde quiera que voy y me siento juzgado —",
-     "susurró Milo temblando. ",
-     "No me digassss. Pobrecito chiquitín. ",
-     "No te preocupessss por ella, aquí no puede hacerte daño, no mientras yo esté contigo. "
-    ],
+    };
 
-  4: [
-     "La serpiente se enroscó alrededor del ratón en lo que parecía ser una especie de abrazo",
-     "Milo, al notar los colmillos de la serpiente asomarse, intentó soltarse del agarre, ",
-     "argumentando que tenía que seguir buscando su comida… pero era demasiado tarde.",
-     "Aquí, la luna nunca más te va a juzgar, pequeño. ",
-     "Y en un instante, la serpiente enguyó al ratón. ",
-     "Dejando sólo mechones de pelo volando por el lugar. ",
-     " Y tal como lo dijo, la luna no lo volvería a juzgar porque ahora Milo estaba con ella. "
-  ],
+    // Variables
 
-  5: [
-    "Una noche de luna llena, tan fría y silenciosa, ",
-    " Milo corría despavorido nuevamente. Distraído y ansioso por esconderse,",
-    "tropezó con una luciérnaga que descansaba tranquilamente sobre una piedra, brillando.",
-    "—¿Por qué corres así, ratoncito? —preguntó la luciérnaga.",
-    "—La Luna, me observa, me sigue a dónde quiera que voy y me siento juzgado —susurró Milo temblando.",
-    "La luciérnaga soltó una risita tintineante.",
-    "—¿Y qué tiene de malo que alguien te observe? ",
-    "Tal vez no te está mirando para juzgarte… sino para darte compañía",
-    "¿No lo habías pensado, chiquitín? "
-  ],
+    const storyBox = document.querySelector("#story-box");
+    const menu = document.querySelector("#menu");
+    const scanMessage = document.querySelector("#scan-message");
 
-  6: [
-    "Milo se quedó pensando por un momento, dudoso. ",
-    "Se permitió mirar al cielo y logró admirarla en su vasto esplendor.",
-    "Un pensamiento en él cambió,  el miedo que sentía se transformó en admiración.",
-    "Por esa noche y todas las siguientes decidió no volver a esconderse.",
-    "Se sentó en el pasto y al voltear al cielo se encontró acompañado.",
-    "La Luna, muy despacio, se iluminó aún más fuerte… ",
-    "como si le devolviera la atención y con ella una sonrisa.",
-    "Desde entonces, el pequeño Milo aprendió algo importante a pesar de sentir miedo algunas veces: ",
-    "La valentía no es no tener miedo…",
-    "es atreverse a mirar al miedo a los ojos y sonreírle de vuelta."
-    
-  ],
+    const btnNext = document.querySelector("#btnNext");
+    const btnPrev = document.querySelector("#btnPrev");
 
-  7: [
-    "Una noche de luna llena, tan fría y silenciosa,",
-    "Milo corría despavorido nuevamente. Distraído y ansioso por esconderse,",
-    "no reparó en notar el enorme agujero que había delante suyo. ",
-    "El pequeño ratón cayó por una de las paredes hasta tocar el suelo.",
-    "Aturdido por el impacto, con el corazón al mil por hora, intentó escalar para salir sin éxito alguno.",
-    "Lo aterrador para él no era el agujero, ni el hecho de estar atrapado,",
-    " era que al mirar hacia arriba, la luna abarcaba la única salida. ",
-    "Lo único que los separaba era un pedazo de cielo y para Milo eso era lo peor. ",
-    "En ese momento, el tiempo para Milo pareció detenerse.",
-    "Los minutos se sentían como horas, había gastado sus pocas fuerzas en intentar escapar del agujero.",
-    "Resignado, se aferró a la poca luz que aún tenía, aunque fuera de ella.",
-    " A pesar de ser incómoda y juzgona, empezaba a sentir algo diferente, algo parecido a la compañía. ",
-    "Al pasar de una hora, la luna había avanzado lo suficiente para ya no cubrir el agujero.",
-    "Con el pasar de los minutos dejó de avistarse, dejándolo completamente a oscuras.",
-    "Si había algo que nuestro ratón odiaba más que sentirse observado, era la oscuridad.",
-    "Quizá empezó a extrañarla, la luz que lo cubría y la compañía que le brindaba.",
-    "Los pensamientos negativos que por mucho tiempo sostuvo, se disiparon con el pasar de las horas. "
-    
-  ],
+    let currentPage = null;
+    let currentFragment = 0;
 
-  8: [
-    "La luz del amanecer fue lo que despertó a Milo.",
-    "No recordaba haberse dormido, pero  realmente se encontraba feliz de no estar a mitad de la noche con el sonido de su respiración cómo su único amigo. ",
-    "Ahora poseía energía suficiente para intentar subir a la superficie. ",
-    " Con el sol saludando en el éste, y después de un par de intentos más por fin lo logró. ",
-    "El aire se sentía diferente. Milo recordó entonces a la luna tan grande, blanca y redonda… ",
-    "Ahora, en vez de que su corazón sintiera miedo, sintió una especie de paz y de añoranza.",
-    "No lo había experimentado antes, era raro,",
-    " pero no tan raro cómo las ansias que tenía de que oscureciera sólo para verla brillar una vez más."
-  ]
+    // Mostrar texto
 
-  
-};
+    function showCurrentFragment() {
 
-const storyTimings = {
-  0: [
-    {time: 0, text: "Había una vez un ratoncito llamado Mauro,"},
-    {time: 3, text: "que vivía en una madriguera cálida bajo un roble viejo."},
-    {time: 6, text: "Le encantaba salir por las noches a buscar semillas…"},
-    {time: 9, text: "pero había algo que lo asustaba: ¡La Luna!"}
-  ],
-  1: [
-    {time: 0, text: "Grande, blanca y redonda,"},
-    {time: 1, text: "lo miraba desde lo alto con un brillo tan intenso que Mauro sentía que lo estaba juzgando."},
-    {time: 6, text: "—Seguro se ríe de mí porque soy pequeño… —"},
-    {time: 10, text: "pensaba mientras corría a esconderse entre las hojas."}
-  ],
-  2: [
-    {time: 0, text: "Una noche, mientras huía apresurado"},
-    {time: 2, text: "tropezó con una luciérnaga que brillaba tranquilamente sobre una piedra."},
-    {time: 7, text: "—¿Por qué corres así? —preguntó la luciérnaga."},
-    {time: 10, text: "—La Luna me mira —susurró Mauro temblando."},
-    {time: 13, text: "La luciérnaga soltó una risita luminosa."},
-    {time: 16, text: "—¿Y qué tiene de malo que alguien te mire?"},
-    {time: 19, text: "Tal vez no te está mirando para juzgarte… sino para acompañarte."}
-  ],
-  3: [
-    {time: 0, text: "Mauro se quedó pensando. Esa noche decidió no esconderse."},
-    {time: 4, text: "Se sentó en el pasto y miró hacia el cielo."},
-    {time: 6, text: "La Luna, muy despacio, brilló aún más fuerte… como si le sonriera."},
-    {time: 12, text: "Y Mauro, por primera vez, le sonrió también."},
-    {time: 16, text: "Desde entonces, el pequeño ratón siguió sintiendo miedo a veces, pero había aprendido algo importante:"},
-    {time: 23, text: "La valentía no es no tener miedo… es atreverse a mirar al miedo a los ojos y sonreírle de vuelta."}
-  ],
+      if (currentPage !== null) {
 
-  4: [
-    "Mauro y la Luna",
-    "Cuento con AR"
-    ]
-};
+        const fragments = storyPages[currentPage];
 
-// 🎧 Audio por página
-const btnAudio = document.getElementById("btnAudio");
-const audioMap = {
-  0: document.getElementById("audio1"),
-  1: document.getElementById("audio2"),
-  2: document.getElementById("audio3"),
-  3: document.getElementById("audio4"),
-  4: document.getElementById("audio5")
-};
+        storyBox.innerText = fragments[currentFragment];
 
-let currentAudio = null;
+        menu.style.display = "block";
 
-// Mostrar botón de audio
-function showAudioButton(show) {
-  btnAudio.style.display = show ? "block" : "none";
-}
+        scanMessage.style.display = "none";
+      }
+    }
 
-// Reproducir / pausar
-btnAudio.addEventListener("click", () => {
-  if (!currentAudio) return;
+    // Ocultar
 
-  if (currentAudio.paused) {
-    currentAudio.play();
-    btnAudio.textContent = "⏸️";
-     disableNavButtons();
-  } else {
-    currentAudio.pause();
-    btnAudio.textContent = "🔊";
-    enableNavButtons(); 
-  }
-});
+    function hideAll() {
 
-// Activar audio al detectar página
-function handlePageAudio(pageIndex) {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-  }
+      menu.style.display = "none";
 
-  currentAudio = audioMap[pageIndex];
+      scanMessage.style.display = "block";
+    }
 
-  showAudioButton(true);
+    // Navegación
 
-  // 🔥 Reproducir automáticamente al detectar target
-  currentAudio.play()
-    .then(() => {
-      btnAudio.textContent = "⏸️";  // Cambia el icono del botón
-      disableNavButtons();          // Deshabilita navegación durante el audio
-    })
-    .catch(e => {
-      console.log("⚠️ Autoplay bloqueado por el navegador. Esperando interacción…");
-      btnAudio.textContent = "🔊";  // Mostrar botón para iniciar manual
+    btnNext.addEventListener("click", () => {
+
+      if (currentPage !== null) {
+
+        const fragments = storyPages[currentPage];
+
+        currentFragment =
+          (currentFragment + 1) % fragments.length;
+
+        showCurrentFragment();
+      }
     });
-}
-    
 
-// Detener audio
-function stopAudio() {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-  }
-  showAudioButton(false);
-}
+    btnPrev.addEventListener("click", () => {
 
-// Estado del cuento
-let currentPage = null;
-let currentFragment = 0;
-let arSystem;
-const sceneEl = document.querySelector("a-scene");
+      if (currentPage !== null) {
 
-function showCurrentFragment() {
-  if (currentPage !== null) {
-    const fragments = storyPages[currentPage];
-    storyBox.innerText = fragments[currentFragment];
-    menu.style.display = "block";
+        const fragments = storyPages[currentPage];
+
+        currentFragment =
+          (currentFragment - 1 + fragments.length) % fragments.length;
+
+        showCurrentFragment();
+      }
+    });
+
+    // Targets
+
+    function setupTargetEvents(id, pageIndex) {
+
+      const el = document.querySelector(id);
+
+      el.addEventListener("targetFound", () => {
+
+        currentPage = pageIndex;
+
+        currentFragment = 0;
+
+        showCurrentFragment();
+
+        console.log("Target encontrado:", pageIndex);
+      });
+
+      el.addEventListener("targetLost", () => {
+
+        currentPage = null;
+
+        hideAll();
+
+        console.log("Target perdido:", pageIndex);
+      });
+    }
+
+    setupTargetEvents("#target-page1", 0);
+    setupTargetEvents("#target-page2", 1);
+    setupTargetEvents("#target-page3", 2);
+    setupTargetEvents("#target-page4", 3);
+    setupTargetEvents("#target-page5", 4);
+    setupTargetEvents("#target-page6", 5);
+    setupTargetEvents("#target-page7", 6);
+    setupTargetEvents("#target-page8", 7);
+    setupTargetEvents("#target-page9", 8);
+
+    // Rotación imágenes escaneo
+
+    const scanImage = document.querySelector("#scan-image");
+
+    const scanImages = [
+      "./Introduccion1.png",
+      "./Introduccion2.png",
+      "./Intermedio.png",
+      "./FinalA1.png",
+      "./FinalA2.png",
+      "./FinalB1.png",
+      "./FinalB2.png",
+      "./FinalC1.png",
+      "./FinalC2.png"
+    ];
+
+    let scanIndex = 0;
+
+    setInterval(() => {
+
+      scanIndex = (scanIndex + 1) % scanImages.length;
+
+      scanImage.src = scanImages[scanIndex];
+
+    }, 2000);
+
+    // Pantalla inicio
+
+    const startScreen = document.getElementById("start-screen");
+
+    const creditsModal = document.getElementById("credits-modal");
+
+    const btnStartStory = document.getElementById("btnStartStory");
+
+    const btnCredits = document.getElementById("btnCredits");
+
+    const btnCloseCredits = document.getElementById("btnCloseCredits");
+
+    // Inicial
+
     scanMessage.style.display = "none";
-  }
-}
 
-function hideAll() {
-  menu.style.display = "none";
-  scanMessage.style.display = "block";
-}
+    menu.style.display = "none";
 
-    function activateAutoText(pageIndex) {
-  const audio = audioMap[pageIndex];
-  const timings = storyTimings[pageIndex];
+    // Iniciar cuento
 
-audio.ontimeupdate = null;
-  audio.onended = null;
+    btnStartStory.addEventListener("click", () => {
 
-  audio.ontimeupdate = () => {
-    const t = audio.currentTime;
-    for (let i = timings.length - 1; i >= 0; i--) {
-      if (t >= timings[i].time) {
-        storyBox.innerText = timings[i].text;
-         disableNavButtons();
-        break;
-      }
-    }
-  };
-   audio.onended = () => {
-    enableNavButtons();
-    btnAudio.textContent = "🔊";
-  }; 
-}
+      startScreen.style.display = "none";
 
-  function disableNavButtons() {
-  btnNext.classList.add("disabled");
-  btnPrev.classList.add("disabled");
-}
-
-function enableNavButtons() {
-  btnNext.classList.remove("disabled");
-  btnPrev.classList.remove("disabled");
-}
-
-function forceHideAllModels() {
-  document.querySelectorAll("[mindar-image-target]").forEach(t => {
-    t.object3D.visible = false;
-  });
-}
-
-
-// Navegación
-btnNext.addEventListener("click", () => {
-  if (currentPage !== null) {
-    const fragments = storyPages[currentPage];
-    currentFragment = (currentFragment + 1) % fragments.length;
-    showCurrentFragment();
-  }
-});
-
-btnPrev.addEventListener("click", () => {
-  if (currentPage !== null) {
-    const fragments = storyPages[currentPage];
-    currentFragment = (currentFragment - 1 + fragments.length) % fragments.length;
-    showCurrentFragment();
-  }
-});
-
-// Detectar targets
-function setupTargetEvents(id, pageIndex) {
-  const el = document.querySelector(id);
-  el.addEventListener("targetFound", () => {
-    currentPage = pageIndex;
-    currentFragment = 0;
-    el.object3D.visible = true;
-    showCurrentFragment();
-    handlePageAudio(pageIndex);
-    activateAutoText(pageIndex);
-  });
-  el.addEventListener("targetLost", () => {
-    currentPage = null;
-    el.object3D.visible = false;
-    hideAll();
-    stopAudio();
-  });
-}
-
-setupTargetEvents("#target-page1", 0);
-setupTargetEvents("#target-page2", 1);
-setupTargetEvents("#target-page3", 2);
-setupTargetEvents("#target-page4", 3);
-setupTargetEvents("#target-page5", 4);
-
-// Inicializar MindAR cuando la escena esté lista
-sceneEl.addEventListener("loaded", () => {
-  arSystem = sceneEl.systems["mindar-image-system"];
-});
-
-// Rotación de imagen de escaneo
-const scanImage = document.querySelector("#scan-image");
-const scanImages = ["./page1.png","./page2.png","./page3.png","./page4.png"];
-let scanIndex = 0;
-setInterval(() => {
-  scanIndex = (scanIndex + 1) % scanImages.length;
-  scanImage.src = scanImages[scanIndex];
-}, 2000);
-
-// ⭐ Pantalla de inicio y créditos
-const startScreen = document.getElementById("start-screen");
-const creditsModal = document.getElementById("credits-modal");
-const btnStartStory = document.getElementById("btnStartStory");
-const btnCredits = document.getElementById("btnCredits");
-const btnCloseCredits = document.getElementById("btnCloseCredits");
-
-// Ocultar controles iniciales
-scanMessage.style.display = "none";
-menu.style.display = "none";
-document.getElementById("controls").style.display = "none";
-
-// ⭐⭐ 🚀 Iniciar cuento + iniciar AR AUTOMÁTICO
-btnStartStory.addEventListener("click", () => {
-  startScreen.style.display = "none";
-  scanMessage.style.display = "block";
-  document.getElementById("controls").style.display = "flex";
-
-  modeSwitch.style.display = "flex"; // ahora sí aparece
-
-
-  // 🚀 INICIAR MINDAR DESPUÉS DEL CLICK
-  if (arSystem) arSystem.start();
-});
-
-    
-    function fixMaterialsBrightness() {
-  const scene = document.querySelector("a-scene").object3D;
-
-  scene.traverse((node) => {
-    if (node.isMesh && node.material) {
-      const mat = node.material;
-
-      // 🔥 Ajuste que arregla el brillo exagerado
-      if (mat.envMapIntensity !== undefined) mat.envMapIntensity = 0.6;
-      if (mat.emissiveIntensity !== undefined) mat.emissiveIntensity = 1.0;
-
-      mat.needsUpdate = true;
-    }
-  });
-}
-
-
-    function disableARInput() {
-  const canvas = document.querySelector("a-scene").canvas;
-  if (canvas) {
-    canvas.style.pointerEvents = "none";
-  }
-}
-
-    function enableARInput() {
-  const canvas = document.querySelector("a-scene").canvas;
-  if (canvas) {
-    canvas.style.pointerEvents = "auto";
-  }
-}
-
-
-
-
-// Créditos
-btnCredits.addEventListener("click", () => {
-  creditsModal.style.display = "flex";
-});
-btnCloseCredits.addEventListener("click", () => {
-  creditsModal.style.display = "none";
-});
-
-    const freeModel = document.getElementById("freeModel");
-const btn3D = document.getElementById("enter3d");
-const btnAR = document.getElementById("enterAR");
-const modeSwitch = document.getElementById("mode-switch");
-
-modeSwitch.style.display = "flex";
-
-// ➤ Activar modo 3D
-btn3D.addEventListener("click", () => {
-  if (arSystem) arSystem.stop();
-  disableARInput();  
-
-  // Ocultar targets AR
-  document.querySelectorAll("[mindar-image-target]").forEach(t => {
-    t.setAttribute("visible", "false");
-  });
-
-  // Fondo azul oscuro para modo 3D
-const renderer = sceneEl.renderer;
-renderer.setClearColor("#001a33", 1);   // azul noche bonito
-
-
-  // Mostrar modelo 3D libre con GLB correspondiente
-  if (currentPage !== null) {
-    freeModel.setAttribute("gltf-model", `#PageModel${currentPage + 1}`);
-    freeModel.setAttribute("visible", "true");
-  }
-
-  btn3D.style.display = "none";
-  btnAR.style.display = "inline-block";
-});
-
-// ➤ Regresar a modo AR
-btnAR.addEventListener("click", () => {
-  freeModel.setAttribute("visible", "false");
-
-   // Restaurar fondo transparente
-  const renderer = sceneEl.renderer;
-  renderer.setClearColor("#000000", 0);
-
-  // Mostrar targets AR
-  document.querySelectorAll("[mindar-image-target]").forEach(t => {
-    t.setAttribute("visible", "true");
-  });
-
-  // Quitar fondo nocturno en AR
-   forceHideAllModels();
-  if (arSystem) {
-    arSystem.start();
-
-    setTimeout(() => {
-      fixMaterialsBrightness();
-      enableARInput();
-    }, 300);
-  }
-
-  btnAR.style.display = "none";
-  btn3D.style.display = "inline-block";
-});
-
-
-AFRAME.registerComponent("attach-moon-light", {
-  schema: {
-    moonName: { default: "Luna" } // Cambia si tu luna tiene otro nombre
-  },
-
-  init() {
-    this.el.addEventListener("model-loaded", () => {
-      const root = this.el.getObject3D("mesh");
-
-      if (!root) return;
-
-      let moonMesh = null;
-
-      // Buscar la luna dentro del GLB
-      root.traverse(node => {
-        if (node.isMesh && node.name.includes(this.data.moonName)) {
-          moonMesh = node;
-        }
-      });
-
-      if (!moonMesh) {
-        console.warn("❗ No se encontró la luna dentro del modelo");
-        return;
-      }
-
-     // Luz amarilla cálida
-      const moonLight = new THREE.SpotLight(0xfff2b0, 1.4, 5, Math.PI / 4, 0.3);
-      moonLight.castShadow = false;
-
-      moonLight.penumbra = 0.6;
-        moonLight.decay = 1.2;
-        moonLight.distance = 6;
-
-
-      // Posicionar la luz justo SOBRE la luna
-      moonMesh.add(moonLight);
-      moonLight.position.set(0, 0.15, 0.15);
-
-      // 👉 Si quieres que la luna brille sola (glow)
-      moonMesh.material.emissive = new THREE.Color(0xffd87d);
-      moonMesh.material.emissiveIntensity = 1.3;
-      moonMesh.material.needsUpdate = true;
-
-      console.log("🌕 Luz colocada sobre la luna:", moonMesh.name);
-    });
-  }
-});
-
-
-
-</script>
-
-<!-- Script para dar efecto nocturno -->
-<script>
-AFRAME.registerComponent("nightify", {
-  init() {
-    this.el.addEventListener("model-loaded", () => {
-      this.el.object3D.traverse((node) => {
-        if (node.isMesh && node.material) {
-          const mat = node.material;
-
-          // Color normal, sin tintes azules
-          if (mat.color) {
-            mat.color.multiplyScalar(1.0);
-          }
-
-          // Emissive MUY suave
-          if (mat.emissive) {
-            mat.emissive.setRGB(0.05, 0.07, 0.12);  // casi neutro
-            mat.emissiveIntensity = 0.2;
-          }
-
-          // Reflejo más bajo
-          if (mat.envMapIntensity !== undefined) {
-            mat.envMapIntensity = 0.45;
-          }
-
-          mat.needsUpdate = true;
-        }
-      });
-    });
-  }
-});
-
-
-</script>
-
-
-   <script>
-AFRAME.registerComponent("pause-animations-on-gesture", {
-  init() {
-    this.isInteracting = false;
-
-    this.el.sceneEl.addEventListener("gesturestart", () => {
-      if (!this.isInteracting) {
-        this.isInteracting = true;
-        this.pauseAnimations();
-      }
+      scanMessage.style.display = "block";
     });
 
-    this.el.sceneEl.addEventListener("gestureend", () => {
-      this.isInteracting = false;
-      this.resumeAnimations();
+    // Créditos
+
+    btnCredits.addEventListener("click", () => {
+
+      creditsModal.style.display = "flex";
     });
-  },
 
-  pauseAnimations() {
-    const comps = this.el.components;
-    for (let key in comps) {
-      if (key.startsWith("animation__")) {
-        comps[key].pause();
-      }
-    }
-  },
+    btnCloseCredits.addEventListener("click", () => {
 
-  resumeAnimations() {
-    const comps = this.el.components;
-    for (let key in comps) {
-      if (key.startsWith("animation__")) {
-        comps[key].play();
-      }
-    }
-  }
-});
-</script>
- 
+      creditsModal.style.display = "none";
+    });
 
-  </body>
+  </script>
+
+</body>
+
 </html>
-
-
-
+```
 
 
 
