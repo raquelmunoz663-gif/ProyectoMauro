@@ -51,6 +51,7 @@
       font-size: 19px;
       line-height: 1.5;
     }
+    
 
     /* 🧭 Mensaje escaneo */
     #scan-message {
@@ -225,6 +226,16 @@
 
   </div>
 
+  <div id="audio-controls">
+
+  <button id="btnPlay">▶️ Play</button>
+
+  <button id="btnPause">⏸ Pause</button>
+
+  <button id="btnReplay">🔁 Reiniciar</button>
+
+</div>
+
   <!-- 🧱 ESCENA -->
   <a-scene
     mindar-image="imageTargetSrc: ./cuento.mind; maxTrack: 2"
@@ -378,14 +389,14 @@
   <script>
 
     const pageAudio = {
-  0: "./audio/Introduccion1.mp3",
-  1: "./audio/Introduccion2.mp3",
-  3: "./audio/FinalA1.mp3",
-  4: "./audio/FinalA2.mp3",
-  5: "./audio/FinalB1.mp3",
-  6: "./audio/FinalB2.mp3",
-  7: "./audio/FinalC1.mp3",
-  8: "./audio/FinalC2.mp3"
+  0: "./Introduccion1.mp3",
+  1: "./Introduccion2.mp3",
+  3: "./FinalA1.mp3",
+  4: "./FinalA2.mp3",
+  5: "./FinalB1.mp3",
+  6: "./FinalB2.mp3",
+  7: "./FinalC1.mp3",
+  8: "./FinalC2.mp3"
 };
 
     const audioPlayer = document.querySelector("#audio-player");
@@ -714,6 +725,31 @@ audioPlayer.addEventListener("ended", () => {
 
     const btnCloseCredits = document.getElementById("btnCloseCredits");
 
+    const btnPlay = document.querySelector("#btnPlay");
+const btnPause = document.querySelector("#btnPause");
+const btnReplay = document.querySelector("#btnReplay");
+
+    btnPlay.addEventListener("click", () => {
+
+  audioPlayer.play();
+
+});
+
+    
+    btnPause.addEventListener("click", () => {
+
+  audioPlayer.pause();
+
+});
+
+    btnReplay.addEventListener("click", () => {
+
+  audioPlayer.currentTime = 0;
+  audioPlayer.play();
+
+});
+
+    
     // Inicial
 
     scanMessage.style.display = "none";
