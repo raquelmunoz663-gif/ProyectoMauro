@@ -161,6 +161,46 @@
     #credits-box button:hover {
       background: #4682b4;
     }
+
+
+    #audio-controls {
+
+  position: fixed;
+
+  bottom: 120px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 1200;
+
+  display: flex;
+
+  gap: 10px;
+}
+
+#audio-controls button {
+
+  padding: 10px 15px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #1e90ff;
+
+  color: white;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+#audio-controls button:hover {
+
+  background: #4682b4;
+}
   </style>
 </head>
 
@@ -471,8 +511,10 @@ let isAudioPlaying = false;
         "Se sentó en el pasto y al voltear al cielo se encontró acompañado.", 
         "La Luna, muy despacio, se iluminó aún más fuerte… ", 
         "como si le devolviera la atención y con ella una sonrisa.", 
+        "Y Mauro, por primera vez, le sonrió también.",
         "Desde entonces, el pequeño Mauro aprendió algo importante a pesar de sentir miedo algunas veces: ", 
-        "La valentía no es no tener miedo…", "es atreverse a mirar al miedo a los ojos y sonreírle de vuelta." 
+        "La valentía no es no tener miedo…", 
+        "es atreverse a mirar al miedo a los ojos y sonreírle de vuelta." 
       ], 
       7: [ "Una noche de luna llena, tan fría y silenciosa,", 
           "Mauro corría despavorido nuevamente. Distraído y ansioso por esconderse,", 
@@ -504,6 +546,109 @@ let isAudioPlaying = false;
           " pero no tan raro cómo las ansias que tenía de que oscureciera sólo para verla brillar una vez más." ]
 
     };
+
+    const storyTimings = {
+
+  0: [
+    { time: 0, text: "En una tierra muy lejana, más allá de todo lo que conocemos," },
+    { time: 6, text: "vivía un diminuto ratón de nombre Mauro." },
+    { time: 9, text: "Este vivía en una madriguera cálida debajo de un gran y viejo roble." },
+    { time: 14, text: "Como todas las noches, salió en busca de semillas para saciar su gran apetito." },
+    { time: 18, text: "Sin embargo, más allá de las copas de los árboles," },
+    { time: 22, text: "había algo que lo asustaba en cada una de sus exploraciones nocturnas: la luna." }
+  ],
+
+  1: [
+    { time: 0, text: "Grande, tan blanca como la nieve y redonda igual que el sol," },
+    { time: 5, text: "ella lo miraba desde las alturas." },
+    { time: 7, text: "Por su brillo tan intenso, deslumbrante, Mauro la sentía amenazante," },
+    { time: 12, text: "juzgona e inquietante." },
+    { time: 14, text: "— Seguro se ríe de mí porque soy pequeño… —" },
+    { time: 17, text: "pensaba mientras corría a esconderse bajo unos frondosos arbustos, temeroso." }
+  ],
+      3: [ 
+       { time: 0, text: "Una noche de luna llena, tan fría y silenciosa,"}, 
+       { time: 4, text: "Mauro corría despavorido nuevamente."}, 
+        { time: 6, text:"Distraído y ansioso por esconderse, entró al primer lugar que consideró como seguro. "}, 
+        { time: 12, text:"Algo que sellaría su destino."}, 
+       { time: 15, text: "El lugar era nada más y nada menos que la madriguera de una serpiente."}, 
+       { time: 19, text: " Pero eso era algo que Mauro desconocía, al menos hasta que, "}, 
+       { time: 24, text: " explorando su nuevo escondite chocó de frente con ella. "}, 
+       { time: 28, text: "La serpiente extasiada por el nuevo inquilino, se adelantó a cubrir la entrada con su largo cuerpo."}, 
+       { time: 33, text: "-¿Qué trae a esssssste pequeño ratón a mi casa? - "}, 
+       { time: 38, text: "preguntó con una malévola sonrisa "}, 
+       { time: 40, text: " - Bienvenido, ponte cómodo. Ssse ve que estás muy cansssssado. -"}, 
+       { time: 46, text: "La Luna me observa, me sigue a dónde quiera que voy y me siento juzgado —"}, 
+       { time: 52, text: "susurró Mauro temblando. "}, 
+      { time: 54, text:"-No me digassss. Pobrecito chiquitín.- "}, 
+      { time: 58, text:  "No te preocupessss por ella, aquí no puede hacerte daño, no mientras yo esté contigo. " }
+      ], 
+      4: [ 
+         { time: 0, text:"La serpiente se enroscó alrededor del ratón en lo que parecía ser una especie de abrazo"}, 
+         { time: 6, text:"Mauro, al notar los colmillos de la serpiente asomarse, intentó soltarse del agarre, "}, 
+        { time: 12, text: "argumentando que tenía que seguir buscando su comida… pero era demasiado tarde."}, 
+         { time: 17, text:"-Aquí, la luna nunca más te va a juzgar, pequeño. -"}, 
+        { time: 21, text: "Y en un instante, la serpiente enguyó al ratón. "},
+         { time: 25, text:"Dejando sólo mechones de pelo volando por el lugar. "}, 
+         { time: 28, text:" Y tal como lo dijo, la luna no lo volvería a juzgar porque ahora Mauro estaba con ella. " }
+      ], 
+      5: [
+         { time: 0, text:"Una noche de luna llena, tan fría y silenciosa, "}, 
+         { time: 4, text:" Mauro corría despavorido nuevamente. Distraído y ansioso por esconderse,"},
+        { time: 9, text: "tropezó con una luciérnaga que descansaba tranquilamente sobre una piedra, brillando."}, 
+         { time: 14, text:"—¿Por qué corres así, ratoncito? —preguntó la luciérnaga."}, 
+         { time: 19, text:"—La Luna, me observa, me sigue a dónde quiera que voy y me siento juzgado —susurró Mauro temblando."}, 
+         { time: 26, text:"La luciérnaga soltó una risita tintineante."}, 
+        { time: 29, text: "—¿Y qué tiene de malo que alguien te observe? "}, 
+         { time: 32, text:"Tal vez no te está mirando para juzgarte… sino para darte compañía"}, 
+         { time: 36, text:"¿No lo habías pensado, chiquitín? "}
+      ],
+      6: [ 
+         { time: 0, text:"Mauro se quedó pensando por un momento, dudoso. "}, 
+        { time: 4, text: "Se permitió mirar al cielo y logró admirarla en su vasto esplendor."}, 
+         { time: 9, text:"Un pensamiento en él cambió, el miedo que sentía se transformó en admiración."}, 
+         { time: 14, text:"Por esa noche y todas las siguientes decidió no volver a esconderse."}, 
+         { time: 18, text:"Se sentó en el pasto y al voltear al cielo se encontró acompañado."}, 
+         { time: 24, text:"La Luna, muy despacio, se iluminó aún más fuerte… "}, 
+         { time: 27, text:"como si le devolviera la atención y con ella una sonrisa."}, 
+          { time: 32, text:"Y Mauro, por primera vez, le sonrió también."}, 
+         { time: 35, text:"Desde entonces, el pequeño Mauro aprendió algo importante a pesar de sentir miedo algunas veces: "}, 
+         { time: 42, text:"La valentía no es no tener miedo…"}, 
+          { time: 45, text:"es atreverse a mirar al miedo a los ojos y sonreírle de vuelta." }
+      ], 
+      7: [ 
+         { time: 0, text:"Una noche de luna llena, tan fría y silenciosa,"}, 
+           { time: 5, text:"Mauro corría despavorido nuevamente. Distraído y ansioso por esconderse,"}, 
+           { time: 10, text:"no reparó en notar el enorme agujero que había delante suyo. "}, 
+           { time: 14, text:"El pequeño ratón cayó por una de las paredes hasta tocar el suelo."}, 
+           { time: 18, text:"Aturdido por el impacto, con el corazón al mil por hora, intentó escalar para salir sin éxito alguno."}, 
+           { time: 24, text:"Lo aterrador para él no era el agujero, ni el hecho de estar atrapado,"}, 
+           { time: 29, text:" era que al mirar hacia arriba, la luna abarcaba la única salida. "}, 
+           { time: 33, text:"Lo único que los separaba era un pedazo de cielo y para Mauro eso era lo peor. "}, 
+           { time: 39, text:"En ese momento, el tiempo para Mauro pareció detenerse."}, 
+           { time: 43, text:"Los minutos se sentían como horas, había gastado sus pocas fuerzas en intentar escapar del agujero."}, 
+           { time: 49, text:"Resignado, se aferró a la poca luz que aún tenía, aunque fuera de ella."}, 
+           { time: 55, text:" A pesar de ser incómoda y juzgona, empezaba a sentir algo diferente, algo parecido a la compañía. "}, 
+           { time: 62, text:"Al pasar de una hora, la luna había avanzado lo suficiente para ya no cubrir el agujero."}, 
+           { time: 68, text:"Con el pasar de los minutos dejó de avistarse, dejándolo completamente a oscuras."}, 
+           { time: 73, text:"Si había algo que nuestro ratón odiaba más que sentirse observado, era la oscuridad."}, 
+           { time: 79, text:"Quizá empezó a extrañarla, la luz que lo cubría y la compañía que le brindaba."}, 
+           { time: 84, text:"Los pensamientos negativos que por mucho tiempo sostuvo, se disiparon con el pasar de las horas. "}
+         ], 
+      
+      8: [ 
+         { time: 0, text: "La luz del amanecer fue lo que despertó a Mauro."}, 
+           { time: 3, text:"No recordaba haberse dormido, pero realmente se encontraba feliz"}, 
+           { time: 7, text: "de no estar a mitad de la noche con el sonido de su respiración cómo su único amigo. "},
+           { time: 12, text:"Ahora poseía energía suficiente para intentar subir a la superficie. "}, 
+           { time: 16, text:" Con el sol saludando en el éste, y después de un par de intentos más por fin lo logró. "}, 
+           { time: 22, text:"El aire se sentía diferente. Mauro recordó entonces a la luna tan grande, blanca y redonda… "}, 
+           { time: 28, text:"Ahora, en vez de que su corazón sintiera miedo, sintió una especie de paz y de añoranza."}, 
+           { time: 34, text:"No lo había experimentado antes, era raro,"}, 
+           { time: 38, text:" pero no tan raro cómo las ansias que tenía de que oscureciera sólo para verla brillar una vez más."}
+      ]
+
+};
 
     // Variables
 
@@ -577,28 +722,6 @@ function updateIntermedioModels() {
 });
 
 
-    function startAutoAdvance() {
-  stopAutoAdvance();
-
-  autoAdvanceInterval = setInterval(() => {
-    if (currentPage === null) return;
-
-    const fragments = storyPages[currentPage];
-
-    currentFragment = (currentFragment + 1) % fragments.length;
-
-    storyBox.innerText = fragments[currentFragment];
-
-  }, 4000); // ⬅️ velocidad del avance (ajustable)
-}
-
-function stopAutoAdvance() {
-  if (autoAdvanceInterval) {
-    clearInterval(autoAdvanceInterval);
-    autoAdvanceInterval = null;
-  }
-}
-
 btnPrev.addEventListener("click", () => {
    if (isAudioPlaying) return;
 
@@ -633,6 +756,7 @@ el.addEventListener("targetFound", () => {
 if (audio) {
   audioPlayer.src = audio;
   audioPlayer.play();
+  activateAutoText(pageIndex);
 }
 
   if (pageIndex === 2) {
@@ -662,20 +786,28 @@ isAudioPlaying = false;
  
 }
 
-    audioPlayer.addEventListener("play", () => {
-  isAudioPlaying = true;
-  startAutoAdvance();
-});
+    function activateAutoText(pageIndex) {
 
-audioPlayer.addEventListener("pause", () => {
-  isAudioPlaying = false;
-  stopAutoAdvance();
-});
+  const timings = storyTimings[pageIndex];
 
-audioPlayer.addEventListener("ended", () => {
-  isAudioPlaying = false;
-  stopAutoAdvance();
-});
+  if (!timings) return;
+
+  audioPlayer.ontimeupdate = () => {
+
+    const currentTime = audioPlayer.currentTime;
+
+    for (let i = timings.length - 1; i >= 0; i--) {
+
+      if (currentTime >= timings[i].time) {
+
+        storyBox.innerText = timings[i].text;
+
+        break;
+      }
+    }
+  };
+}
+
 
     setupTargetEvents("#target-page1", 0);
     setupTargetEvents("#target-page2", 1);
