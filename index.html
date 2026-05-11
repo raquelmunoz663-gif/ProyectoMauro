@@ -228,7 +228,7 @@
 
   <!-- 🧱 ESCENA -->
   <a-scene
-    mindar-image="imageTargetSrc: ./cuento.mind; maxTrack: 1"
+    mindar-image="imageTargetSrc: ./cuento.mind; maxTrack: 2"
     color-space="sRGB"
     renderer="colorManagement: true"
     vr-mode-ui="enabled: false"
@@ -565,7 +565,7 @@ btnPrev.addEventListener("click", () => {
 function setupTargetEvents(id, pageIndex) {
   const el = document.querySelector(id);
 
- el.addEventListener("targetFound", () => {
+el.addEventListener("targetFound", () => {
 
   currentPage = pageIndex;
   currentFragment = 0;
@@ -576,18 +576,15 @@ function setupTargetEvents(id, pageIndex) {
 
     console.log("INTERMEDIO ACTIVADO");
 
-    // reset seguro
     currentModelIndex = 0;
 
-    // forzar TODOS visibles primero (evita bugs de estado)
     interModels.forEach(m => m.setAttribute("visible", false));
 
-    // mostrar el primero
     interModels[0].setAttribute("visible", true);
   }
    
-    console.log("Target encontrado:", pageIndex);
-  });
+  console.log("Target encontrado:", pageIndex);
+});
 
   el.addEventListener("targetLost", () => {
     currentPage = null;
@@ -616,6 +613,7 @@ function setupTargetEvents(id, pageIndex) {
       "./Intermedio.png",
       "./FinalA1.png",
       "./FinalA2.png",
+      "./Final B1.jpg",
       "./Final B2.jpg",
       "./Final C1.jpg",
       "./Final C2.jpg"
