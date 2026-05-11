@@ -659,17 +659,30 @@ let isAudioPlaying = false;
     const btnNext = document.querySelector("#btnNext");
     const btnPrev = document.querySelector("#btnPrev");
 
-const interModels = [
-  document.querySelector("#modelA"),
-  document.querySelector("#modelB"),
-  document.querySelector("#modelC")
-];
+let interModels = [];
+
+window.addEventListener("load", () => {
+
+  interModels = [
+    document.querySelector("#modelA"),
+    document.querySelector("#modelB"),
+    document.querySelector("#modelC")
+  ];
+
+});
 
 let currentModelIndex = 0;
 
 function updateIntermedioModels() {
+
+  if (!interModels.length) return;
+
   interModels.forEach((m, i) => {
-    m.setAttribute("visible", i === currentModelIndex);
+
+    if (m) {
+      m.setAttribute("visible", i === currentModelIndex);
+    }
+
   });
 }
 
@@ -759,16 +772,24 @@ if (audio) {
   activateAutoText(pageIndex);
 }
 
-  if (pageIndex === 2) {
+ if (pageIndex === 2) {
 
-    console.log("INTERMEDIO ACTIVADO");
+  console.log("INTERMEDIO ACTIVADO");
 
-    currentModelIndex = 0;
+  currentModelIndex = 0;
 
-    interModels.forEach(m => m.setAttribute("visible", false));
+  if (interModels.length > 0) {
 
-    interModels[0].setAttribute("visible", true);
+    interModels.forEach(m => {
+      if (m) m.setAttribute("visible", false);
+    });
+
+    if (interModels[0]) {
+      interModels[0].setAttribute("visible", true);
+    }
+
   }
+}
    
   console.log("Target encontrado:", pageIndex);
 });
