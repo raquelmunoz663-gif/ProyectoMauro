@@ -123,6 +123,28 @@
       background: #4682b4;
     }
 
+      /* 🔊 Botón de audio */
+#btnAudio {
+  position: fixed;
+  top: -90px;
+  right: -100px;
+  z-index: 1500;
+  background: rgba(30, 144, 255, 0.9);
+  color: white;
+  font-size: 22px;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  display: none; /* Se muestra solo cuando hay una página activa */
+}
+
+#btnAudio:hover {
+  background: #4682b4;
+}
+
     /* 🌟 Créditos */
     #credits-modal {
       display: none;
@@ -606,6 +628,28 @@ btnPrev.addEventListener("click", () => {
   }
 });
 
+  let audioUnlocked = false;
+
+const btnAudio = document.getElementById("btnAudio");
+
+btnAudio.addEventListener("click", async () => {
+  try {
+    await audioPlayer.play();
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0;
+
+    audioUnlocked = true;
+
+    console.log("Audio desbloqueado 🎧");
+
+    // opcional: ocultar botón
+    btnAudio.style.display = "none";
+
+  } catch (e) {
+    console.log("Error desbloqueando audio:", e);
+  }
+});
+
     // Targets
 
 function setupTargetEvents(id, pageIndex) {
@@ -620,8 +664,9 @@ el.addEventListener("targetFound", () => {
 
    const audio = pageAudio[pageIndex];
 
-if (audio) {
+if (audio && audioUnlocked) {
   audioPlayer.src = audio;
+  audioPlayer.currentTime = 0;
   audioPlayer.play();
 }
 
