@@ -565,16 +565,27 @@ btnPrev.addEventListener("click", () => {
 function setupTargetEvents(id, pageIndex) {
   const el = document.querySelector(id);
 
-  el.addEventListener("targetFound", () => {
-    currentPage = pageIndex;
-    currentFragment = 0;
-    showCurrentFragment();
+ el.addEventListener("targetFound", () => {
 
-    if (pageIndex === 2) {
-      currentModelIndex = 0;
-      updateIntermedioModels();
-    }
+  currentPage = pageIndex;
+  currentFragment = 0;
 
+  showCurrentFragment();
+
+  if (pageIndex === 2) {
+
+    console.log("INTERMEDIO ACTIVADO");
+
+    // reset seguro
+    currentModelIndex = 0;
+
+    // forzar TODOS visibles primero (evita bugs de estado)
+    interModels.forEach(m => m.setAttribute("visible", false));
+
+    // mostrar el primero
+    interModels[0].setAttribute("visible", true);
+  }
+   
     console.log("Target encontrado:", pageIndex);
   });
 
@@ -605,7 +616,6 @@ function setupTargetEvents(id, pageIndex) {
       "./Intermedio.png",
       "./FinalA1.png",
       "./FinalA2.png",
-      "./Final B1.jpg",
       "./Final B2.jpg",
       "./Final C1.jpg",
       "./Final C2.jpg"
