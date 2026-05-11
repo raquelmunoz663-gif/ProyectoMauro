@@ -249,6 +249,10 @@
       <a-asset-item id="PageModel8" src="./Final C1.glb"></a-asset-item>
       <a-asset-item id="PageModel9" src="./Final C2.glb"></a-asset-item>
 
+      <a-asset-item id="ModelA" src="./Miniatura_A.glb"></a-asset-item>
+      <a-asset-item id="ModelB" src="./Miniatura_B.glb"></a-asset-item>
+      <a-asset-item id="ModelC" src="./Miniatura Final C.glb"></a-asset-item>
+
     </a-assets>
 
     <!-- 💡 Luz -->
@@ -285,6 +289,10 @@
 
     <!-- INTERMEDIO -->
     <a-entity id="target-page3" mindar-image-target="targetIndex: 2">
+      <a-entity class="inter-model" id="modelA" gltf-model="#ModelA" visible="true" position="0 0 0" scale="0.05 0.05 0.05" animation="property: rotation; to: 0 360 0; loop: true; dur: 15000; easing: linear"> </a-entity>
+      <a-entity class="inter-model" id="modelB" gltf-model="#ModelB" visible="false" position="0 0 0" scale="0.05 0.05 0.05" animation="property: rotation; to: 0 360 0; loop: true; dur: 15000; easing: linear"> </a-entity>
+      <a-entity class="inter-model" id="modelC" gltf-model="#ModelC" visible="false" position="0 0 0" scale="0.05 0.05 0.05" animation="property: rotation; to: 0 360 0; loop: true; dur: 15000; easing: linear"> </a-entity>
+      
     </a-entity>
 
     <!-- FINALA1 -->
@@ -477,6 +485,21 @@
     const btnNext = document.querySelector("#btnNext");
     const btnPrev = document.querySelector("#btnPrev");
 
+const interModels = [
+  document.querySelector("#modelA"),
+  document.querySelector("#modelB"),
+  document.querySelector("#modelC")
+];
+
+let currentModelIndex = 0;
+
+function updateIntermedioModels() {
+  interModels.forEach((m, i) => {
+    m.setAttribute("visible", i === currentModelIndex);
+  });
+}
+
+
     let currentPage = null;
     let currentFragment = 0;
 
@@ -507,58 +530,60 @@
 
     // Navegación
 
-    btnNext.addEventListener("click", () => {
+   btnNext.addEventListener("click", () => {
+  if (currentPage !== null) {
 
-      if (currentPage !== null) {
+    if (currentPage === 2) {
+      currentModelIndex = (currentModelIndex + 1) % interModels.length;
+      updateIntermedioModels();
+      return;
+    }
 
-        const fragments = storyPages[currentPage];
+    const fragments = storyPages[currentPage];
+    currentFragment = (currentFragment + 1) % fragments.length;
+    showCurrentFragment();
+  }
+});
 
-        currentFragment =
-          (currentFragment + 1) % fragments.length;
+btnPrev.addEventListener("click", () => {
+  if (currentPage !== null) {
 
-        showCurrentFragment();
-      }
-    });
+    if (currentPage === 2) {
+      currentModelIndex = (currentModelIndex - 1 + interModels.length) % interModels.length;
+      updateIntermedioModels();
+      return;
+    }
 
-    btnPrev.addEventListener("click", () => {
-
-      if (currentPage !== null) {
-
-        const fragments = storyPages[currentPage];
-
-        currentFragment =
-          (currentFragment - 1 + fragments.length) % fragments.length;
-
-        showCurrentFragment();
-      }
-    });
+    const fragments = storyPages[currentPage];
+    currentFragment = (currentFragment - 1 + fragments.length) % fragments.length;
+    showCurrentFragment();
+  }
+});
 
     // Targets
 
-    function setupTargetEvents(id, pageIndex) {
+function setupTargetEvents(id, pageIndex) {
+  const el = document.querySelector(id);
 
-      const el = document.querySelector(id);
+  el.addEventListener("targetFound", () => {
+    currentPage = pageIndex;
+    currentFragment = 0;
+    showCurrentFragment();
 
-      el.addEventListener("targetFound", () => {
-
-        currentPage = pageIndex;
-
-        currentFragment = 0;
-
-        showCurrentFragment();
-
-        console.log("Target encontrado:", pageIndex);
-      });
-
-      el.addEventListener("targetLost", () => {
-
-        currentPage = null;
-
-        hideAll();
-
-        console.log("Target perdido:", pageIndex);
-      });
+    if (pageIndex === 2) {
+      currentModelIndex = 0;
+      updateIntermedioModels();
     }
+
+    console.log("Target encontrado:", pageIndex);
+  });
+
+  el.addEventListener("targetLost", () => {
+    currentPage = null;
+    hideAll();
+    console.log("Target perdido:", pageIndex);
+  });
+}
 
     setupTargetEvents("#target-page1", 0);
     setupTargetEvents("#target-page2", 1);
